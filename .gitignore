@@ -4,13 +4,9 @@
 *.class
 *.dll
 *.exe
+*.o
 *.so
 *.wl6
-
-# Intermediate source #
-###################
-*.s
-*.ii
 
 # Packages #
 ############
@@ -45,32 +41,3 @@ Thumbs.db
 ###############################
 *.layout
 *.depend
-
-# Dev-CPP Files & Folders #
-##############
-/obj
-Wolf4SDL_private.h
-Wolf4SDL_private.rc
-Makefile.win
-
-# Dev-CPP Files & Folders #
-##############
-*.o
-*.d
-*.wl6
-
-
-
-
-
-# VS Files & Folders #
-##############
-*.user
-/debug
-/.vs
-/libraries
-
-# VS Code Files & Folders #
-##############
-/.vscode
-/build

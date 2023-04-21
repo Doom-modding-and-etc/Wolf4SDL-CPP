@@ -5,8 +5,8 @@
 //      By Jason Blochowiak
 //
 
-#ifndef __ID_SD_H_
-#define __ID_SD_H_
+#ifndef __ID_SD__
+#define __ID_SD__
 
 #define alOut(n,b) YM3812Write(oplChip, n, b)
 
@@ -107,12 +107,6 @@ typedef struct
     fixed globalsoundx, globalsoundy;
 } globalsoundpos;
 
-typedef struct
-{
-    uint32_t startpage;
-    uint32_t length;
-} digiinfo;
-
 extern globalsoundpos channelSoundPos[];
 
 // Global variables
@@ -122,16 +116,17 @@ extern  boolean         AdLibPresent,
 extern  SDMode          SoundMode;
 extern  SDSMode         DigiMode;
 extern  SMMode          MusicMode;
-extern  word            NumDigi;
-extern  digiinfo        *DigiList;
 extern  int             DigiMap[];
 extern  int             DigiChannel[];
 
 #define GetTimeCount()  ((SDL_GetTicks()*7)/100)
 
-// Function prototypes
-void            Delay (int32_t wolfticks);
+inline void Delay(int wolfticks)
+{
+    if(wolfticks>0) SDL_Delay(wolfticks * 100 / 7);
+}
 
+// Function prototypes
 extern  void    SD_Startup(void),
                 SD_Shutdown(void);
 

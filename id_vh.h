@@ -1,7 +1,5 @@
 // ID_VH.H
 
-#ifndef __ID_VH_H_
-#define __ID_VH_H_
 
 #define WHITE			15			// graphics mode independant colors
 #define BLACK			0
@@ -66,8 +64,8 @@ void VWB_Vlin (int y1, int y2, int x, int color);
 #define VWB_HlinScaledCoord VW_Hlin
 #define VWB_VlinScaledCoord VW_Vlin
 
-void VH_UpdateScreen (SDL_Surface *surface);
-#define VW_UpdateScreen()   VH_UpdateScreen (screenBuffer)
+void VH_UpdateScreen();
+#define VW_UpdateScreen VH_UpdateScreen
 
 //
 // wolfenstein EGA compatability stuff
@@ -86,8 +84,17 @@ void VH_UpdateScreen (SDL_Surface *surface);
 #define VW_ScreenToScreen	VL_ScreenToScreen
 void	VW_MeasurePropString (const char *string, word *width, word *height);
 
+#define LatchDrawChar(x,y,p) VL_LatchToScreen(latchpics[0],((p)&7)*8,((p)>>3)*8*64,8,8,x,y)
+#define LatchDrawTile(x,y,p) VL_LatchToScreen(latchpics[1],(p)*64,0,16,16,x,y)
+
+void    LatchDrawPic (unsigned x, unsigned y, unsigned picnum);
+void    LatchDrawPicScaledCoord (unsigned scx, unsigned scy, unsigned picnum);
+void    LoadLatchMem (void);
+void    FreeLatchMem();
+
 void    VH_Startup();
 boolean FizzleFade (SDL_Surface *source, int x1, int y1,
     unsigned width, unsigned height, unsigned frames, boolean abortable);
 
-#endif
+#define NUMLATCHPICS	100
+extern	SDL_Surface *latchpics[NUMLATCHPICS];

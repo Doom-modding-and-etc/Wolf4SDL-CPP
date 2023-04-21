@@ -1,9 +1,6 @@
 //
 // WL_MENU.H
 //
-#ifndef __WL_MENU_H_
-#define __WL_MENU_H_
-
 #ifdef SPEAR
 
 #define BORDCOLOR       0x99
@@ -141,6 +138,8 @@ void DrawOutline(int x,int y,int w,int h,int color1,int color2);
 void WaitKeyUp(void);
 void ReadAnyControl(ControlInfo *ci);
 void TicDelay(int count);
+void CacheLump(int lumpstart,int lumpend);
+void UnCacheLump(int lumpstart,int lumpend);
 int StartCPMusic(int song);
 int  Confirm(const char *string);
 void Message(const char *string);
@@ -152,6 +151,7 @@ void BossKey(void);
 void DrawGun(CP_iteminfo *item_i,CP_itemtype *items,int x,int *y,int which,int basey,void (*routine)(int w));
 void DrawHalfStep(int x,int y);
 void EraseGun(CP_iteminfo *item_i,CP_itemtype *items,int x,int y,int which);
+void SetTextColor(CP_itemtype *items,int hlight);
 void DrawMenuGun(CP_iteminfo *iteminfo);
 void DrawStripes(int y);
 
@@ -239,5 +239,3 @@ extern LRstruct LevelRatios[];
 void Write (int x,int y,const char *string);
 void NonShareware(void);
 int GetYorN(int x,int y,int pic);
-
-#endif

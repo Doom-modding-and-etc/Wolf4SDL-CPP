@@ -5,9 +5,6 @@
 //
 //////////////////////////////////////////
 
-#ifndef __GFXV_JAP_H_
-#define __GFXV_JAP_H_
-
 typedef enum {
     // Lump Start
     H_HELP1PIC = 3,              // 3
@@ -220,7 +217,7 @@ typedef enum {
 #define NUMPICS      (GETPSYCHEDPIC - NUMFONT)
 #define NUMPICM      0
 #define NUMSPRITES   0
-#define NUMTILE8     35
+#define NUMTILE8     72
 #define NUMTILE8M    0
 #define NUMTILE16    0
 #define NUMTILE16M   0
@@ -244,5 +241,3 @@ typedef enum {
 #define STARTTILE32  ERRORSCREEN
 #define STARTTILE32M ERRORSCREEN
 #define STARTEXTERNS ERRORSCREEN
-
-#endif

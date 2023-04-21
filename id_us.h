@@ -5,8 +5,8 @@
 //	By Jason Blochowiak
 //
 
-#ifndef	__ID_US_H_
-#define	__ID_US_H_
+#ifndef	__ID_US__
+#define	__ID_US__
 
 #ifdef	__DEBUG__
 #define	__DEBUG_UserMgr__
