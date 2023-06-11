@@ -4,7 +4,7 @@ int ChunksInFile;
 int PMSpriteStart;
 int PMSoundStart;
 
-bool PMSoundInfoPagePadded = false;
+boolean PMSoundInfoPagePadded = false;
 
 // holds the whole VSWAP
 uint32_t *PMPageData;
@@ -30,18 +30,16 @@ void PM_Startup()
     PMSoundStart = 0;
     fread(&PMSoundStart, sizeof(word), 1, file);
 
-    uint32_t* pageOffsets = (uint32_t *) malloc((ChunksInFile + 1) * sizeof(int32_t));
-    CHECKMALLOCRESULT(pageOffsets);
+    uint32_t* pageOffsets = wlreinterpret_cast_conversion(uint32_t *, SafeMalloc((ChunksInFile + 1) * sizeof(int32_t)));
     fread(pageOffsets, sizeof(uint32_t), ChunksInFile, file);
 
-    word *pageLengths = (word *) malloc(ChunksInFile * sizeof(word));
-    CHECKMALLOCRESULT(pageLengths);
+    word *pageLengths = wlreinterpret_cast_conversion(word *, SafeMalloc(ChunksInFile * sizeof(word)));
     fread(pageLengths, sizeof(word), ChunksInFile, file);
 
     fseek(file, 0, SEEK_END);
     long fileSize = ftell(file);
     long pageDataSize = fileSize - pageOffsets[0];
-    if(pageDataSize > (size_t) -1)
+    if(pageDataSize > wlstatic_cast_conversion(size_t, -1))
         Quit("The page file \"%s\" is too large!", fname);
 
     pageOffsets[ChunksInFile] = fileSize;
@@ -53,7 +51,7 @@ void PM_Startup()
     for(i = 0; i < ChunksInFile; i++)
     {
         if(!pageOffsets[i]) continue;   // sparse page
-        if(pageOffsets[i] < dataStart || pageOffsets[i] >= (size_t) fileSize)
+        if(pageOffsets[i] < dataStart || pageOffsets[i] >= wlstatic_cast_conversion(size_t, fileSize))
             Quit("Illegal page offset for page %i: %u (filesize: %u)",
                     i, pageOffsets[i], fileSize);
     }
@@ -71,20 +69,18 @@ void PM_Startup()
     if((pageOffsets[ChunksInFile - 1] - dataStart + alignPadding) & 1)
         alignPadding++;
 
-    PMPageDataSize = (size_t) pageDataSize + alignPadding;
-    PMPageData = (uint32_t *) malloc(PMPageDataSize);
-    CHECKMALLOCRESULT(PMPageData);
+    PMPageDataSize = wlstatic_cast_conversion(size_t, pageDataSize + alignPadding);
+    PMPageData = wlreinterpret_cast_conversion(uint32_t *, SafeMalloc(PMPageDataSize));
 
-    PMPages = (uint8_t **) malloc((ChunksInFile + 1) * sizeof(uint8_t *));
-    CHECKMALLOCRESULT(PMPages);
+    PMPages = wlreinterpret_cast_conversion(uint8_t **, SafeMalloc((ChunksInFile + 1) * sizeof(uint8_t *)));
 
     // Load pages and initialize PMPages pointers
-    uint8_t *ptr = (uint8_t *) PMPageData;
+    uint8_t *ptr = wlreinterpret_cast_conversion(uint8_t *, PMPageData);
     for(i = 0; i < ChunksInFile; i++)
     {
         if(i >= PMSpriteStart && i < PMSoundStart || i == ChunksInFile - 1)
         {
-            size_t offs = ptr - (uint8_t *) PMPageData;
+            size_t offs = ptr - wlreinterpret_cast_conversion(uint8_t *, PMPageData);
 
             // pad with zeros to make it 2-byte aligned
             if(offs & 1)
@@ -118,7 +114,42 @@ void PM_Startup()
     fclose(file);
 }
 
-void PM_Shutdown()
+inline uint32_t PM_GetPageSize(int page)
+{
+    if (page < 0 || page >= ChunksInFile)
+        Quit("PM_GetPageSize: Tried to access illegal page: %i", page);
+    return wlstatic_cast_conversion(uint32_t, (PMPages[page + 1] - PMPages[page]));
+}
+
+inline uint8_t* PM_GetPage(int page)
+{
+    if (page < 0 || page >= ChunksInFile)
+        Quit("PM_GetPage: Tried to access illegal page: %i", page);
+    return PMPages[page];
+}
+
+inline uint8_t* PM_GetEnd() NOEXCEPT
+{
+    return PMPages[ChunksInFile];
+}
+
+inline byte* PM_GetTexture(int wallpic)
+{
+    return PM_GetPage(wallpic);
+}
+
+inline uint16_t* PM_GetSprite(int shapenum)
+{
+    // correct alignment is enforced by PM_Startup()
+    return wlreinterpret_cast_conversion(uint16_t*, wlreinterpret_cast_conversion(void*, PM_GetPage(PMSpriteStart + shapenum)));
+}
+
+inline byte* PM_GetSound(int soundpagenum)
+{
+    return PM_GetPage(PMSoundStart + soundpagenum);
+}
+
+void PM_Shutdown() NOEXCEPT
 {
     free(PMPages);
     free(PMPageData);

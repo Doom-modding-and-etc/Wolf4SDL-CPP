@@ -3,13 +3,20 @@
 
 // Defines which version shall be built and configures supported extra features
 #include "version.h"
-
+#ifdef __cplusplus
+#include <cassert>
+#include <cmath>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#else
 #include <assert.h>
-#include <fcntl.h>
 #include <math.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#endif
+#include <fcntl.h>
 #if defined(_arch_dreamcast)
 #	include <string.h>
 #	include "dc/dc_main.h"
@@ -23,6 +30,14 @@
 #if !defined O_BINARY
 #	define O_BINARY 0
 #endif
+
+#ifdef _MSC_VER
+#pragma warning(disable:26446)
+#pragma warning(disable:26481)
+#pragma warning(disable:26408) //todo
+#pragma warning(disable:26429) 
+#endif
+
 
 #pragma pack(1)
 
@@ -64,13 +79,61 @@ typedef uint8_t byte;
 typedef uint16_t word;
 typedef int32_t fixed;
 typedef uint32_t longword;
-typedef int8_t boolean;
-typedef void * memptr;
+typedef uint8_t boolean;
+
+#if __cplusplus == 199711L
+#define NOEXCEPT throw ()
+#elif __cplusplus == 201704L
+#define NOEXCEPT noexcept
+#else
+#define NOEXCEPT
+#endif
+
+#define MAPSPOT(x,y,plane) (mapsegs[plane][((y)<<mapshift)+(x)])
+
+#define SIGN(x)         ((x)>0?1:-1)
+#define ABS(x)          ((int)(x)>0?(x):-(x))
+#define LABS(x)         ((int32_t)(x)>0?(x):-(x))
+
+/*
+** Converts a type for match the declaration for avoid warnings.
+*/
+#ifdef ORIGINAL
+#ifdef __cplusplus
+#define wlreinterpret_cast_conversion(type, expression) reinterpret_cast<type>(expression)
+#define wlreinterpret_cast_conversion(type, expression) static_cast<type>(expression)
+#else
+#define wlreinterpret_cast_conversion(type, expression) ((type)(expression))
+#define wlstatic_cast_conversion(type, expression) ((type)(expression))
+#endif
+#else
+#ifdef __cplusplus
+#define wlreinterpret_cast_conversion SDL_reinterpret_cast
+#define wlstatic_cast_conversion SDL_static_cast
+#else
+#define wlreinterpret_cast_conversion(type, expression) ((type)(expression))
+#define wlstatic_cast_conversion(type, expression) ((type)(expression))
+#endif
+#endif
+
+#ifdef __cplusplus
+#ifdef OLD
+#define wlconstexpr const
+#else
+#define wlconstexpr constexpr
+#endif
+#define wlconst const
+#else
+#define wlconst const
+#define wlconstexpr wlconst
+#endif
+
 
 typedef struct
 {
     int x,y;
 } Point;
+
 typedef struct
 {
     Point ul,lr;
@@ -88,13 +151,10 @@ void Quit(const char *errorStr, ...);
 
 #include "wl_menu.h"
 
-#define MAPSPOT(x,y,plane) (mapsegs[plane][((y)<<mapshift)+(x)])
 
-#define SIGN(x)         ((x)>0?1:-1)
-#define ABS(x)          ((int)(x)>0?(x):-(x))
-#define LABS(x)         ((int32_t)(x)>0?(x):-(x))
 
-#define abs(x) ABS(x)
+
+/*
 
 /*
 =============================================================================
@@ -171,9 +231,9 @@ typedef uint8_t tiletype;
 
 #define NUMLATCHPICS    100
 
-#undef M_PI
-#define PI              3.141592657
-#define M_PI PI
+#ifndef M_PI
+#define M_PI              3.14159265358979323846
+#endif
 
 #define GLOBAL1         (1l<<16)
 #define TILEGLOBAL      GLOBAL1
@@ -737,7 +797,7 @@ typedef void (* statefunc) (void *);
 
 typedef struct statestruct
 {
-    boolean rotate;
+    int rotate;
     short   shapenum;           // a shapenum of -1 means get from ob->temp1
     short   tictime;
     void    (*think) (void *),(*action) (void *);
@@ -1045,7 +1105,7 @@ extern  int         godmode;
 
 extern  boolean     demorecord,demoplayback;
 extern  int8_t      *demoptr, *lastdemoptr;
-extern  memptr      demobuffer;
+extern  void*      demobuffer;
 
 //
 // control info
@@ -1389,9 +1449,9 @@ void GP2X_ButtonUp(int button);
 =============================================================================
 */
 
-static inline fixed FixedMul(fixed a, fixed b)
+static wlconstexpr inline fixed FixedMul(fixed a, fixed b) NOEXCEPT
 {
-	return (fixed)(((int64_t)a * b + 0x8000) >> 16);
+    return wlstatic_cast_conversion(fixed, (((int64_t)a * b + 0x8000) >> 16));
 }
 
 #ifdef PLAYDEMOLIKEORIGINAL
@@ -1409,6 +1469,22 @@ static inline fixed FixedMul(fixed a, fixed b)
 
 #define ISPOINTER(x) ((((uintptr_t)(x)) & ~0xffff) != 0)
 
+static void *wsafe_malloc(size_t size, const char *fname, uint32_t line)
+{
+    void* ptr;
+#ifdef __cplusplus
+    ptr = std::malloc(size);
+#else
+    ptr = malloc(size);
+#endif
+    if (!ptr)
+        Quit("SafeMalloc: Out of memory at %s: line %u", fname, line);
+
+    return ptr;
+}
+
+#define SafeMalloc(x) wsafe_malloc((x), __FILE__, __LINE__)
+
 #define CHECKMALLOCRESULT(x) if(!(x)) Quit("Out of memory at %s:%i", __FILE__, __LINE__)
 
 #ifdef _WIN32
@@ -1416,13 +1492,13 @@ static inline fixed FixedMul(fixed a, fixed b)
     #define strncasecmp strnicmp
     #define snprintf _snprintf
 #else
-    static inline char* itoa(int value, char* string, int radix)
+    inline char* itoa(int value, char* string, int radix)
     {
 	    sprintf(string, "%d", value);
 	    return string;
     }
 
-    static inline char* ltoa(long value, char* string, int radix)
+    inline char* ltoa(long value, char* string, int radix)
     {
 	    sprintf(string, "%ld", value);
 	    return string;
@@ -1432,18 +1508,18 @@ static inline fixed FixedMul(fixed a, fixed b)
 #define lengthof(x) (sizeof(x) / sizeof(*(x)))
 #define endof(x)    ((x) + lengthof(x))
 
-static inline word READWORD(byte *&ptr)
+inline word READWORD(byte *&ptr) NOEXCEPT
 {
-    word val = ptr[0] | ptr[1] << 8;
+    const word val = ptr[0] | ptr[1] << 8;
     ptr += 2;
-    return val;
+    return wlstatic_cast_conversion(word, val);
 }
 
-static inline longword READLONGWORD(byte *&ptr)
+inline longword READLONGWORD(byte *&ptr) NOEXCEPT
 {
-    longword val = ptr[0] | ptr[1] << 8 | ptr[2] << 16 | ptr[3] << 24;
+    const longword val = ptr[0] | ptr[1] << 8 | ptr[2] << 16 | ptr[3] << 24;
     ptr += 4;
-    return val;
+    return wlstatic_cast_conversion(longword, val);
 }
 
 

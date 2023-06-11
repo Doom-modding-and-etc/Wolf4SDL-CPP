@@ -77,7 +77,7 @@ void SelectItem (void);
 
 //----------
 
-boolean TryMove (objtype *ob);
+boolean TryMove (objtype *ob) NOEXCEPT;
 void T_Player (objtype *ob);
 
 void ClipMove (objtype *ob, int32_t xmove, int32_t ymove);
@@ -839,7 +839,7 @@ void GetBonus (statobj_t *check)
 ===================
 */
 
-boolean TryMove (objtype *ob)
+boolean TryMove (objtype *ob) NOEXCEPT
 {
     int         xl,yl,xh,yh,x,y;
     objtype    *check;
@@ -997,7 +997,7 @@ void VictoryTile (void)
 */
 
 // For player movement in demos exactly as in the original Wolf3D v1.4 source code
-static fixed FixedByFracOrig(fixed a, fixed b)
+static fixed FixedByFracOrig(fixed a, fixed b) NOEXCEPT
 {
     int sign = 0;
     if(b == 65536) b = 65535;
@@ -1073,7 +1073,7 @@ void Thrust (int angle, int32_t speed)
 ===============
 */
 
-void Cmd_Fire (void)
+void Cmd_Fire (void) NOEXCEPT
 {
     buttonheld[bt_attack] = true;
 
@@ -1337,7 +1337,7 @@ void    GunAttack (objtype *ob)
 ===============
 */
 
-void VictorySpin (void)
+void VictorySpin (void) NOEXCEPT
 {
     int32_t    desty;
 

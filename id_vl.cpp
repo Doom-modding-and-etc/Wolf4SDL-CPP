@@ -47,7 +47,7 @@ unsigned bufferPitch;
 SDL_Surface *curSurface = NULL;
 unsigned curPitch;
 
-int      scaleFactor;
+unsigned      scaleFactor;
 
 boolean	 screenfaded;
 unsigned bordercolor;
@@ -143,10 +143,8 @@ void	VL_SetVGAPlaneMode (void)
     scaleFactor = screenWidth/320;
     if(screenHeight/200 < scaleFactor) scaleFactor = screenHeight/200;
 
-    pixelangle = (short *) malloc(screenWidth * sizeof(short));
-    CHECKMALLOCRESULT(pixelangle);
-    wallheight = (int *) malloc(screenWidth * sizeof(int));
-    CHECKMALLOCRESULT(wallheight);
+    pixelangle = (short *)SafeMalloc(screenWidth * sizeof(short));
+    wallheight = (int *)SafeMalloc(screenWidth * sizeof(int));
 }
 
 /*
@@ -188,16 +186,15 @@ void VL_ConvertPalette(byte *srcpal, SDL_Color *destpal, int numColors)
 void VL_FillPalette (int red, int green, int blue)
 {
     int i;
-    SDL_Color pal[256];
 
     for(i=0; i<256; i++)
     {
-        pal[i].r = red;
-        pal[i].g = green;
-        pal[i].b = blue;
+        curpal[i].r = red;
+        curpal[i].g = green;
+        curpal[i].b = blue;
     }
 
-    VL_SetPalette(pal, true);
+    VL_SetPalette(curpal, true);
 }
 
 //===========================================================================

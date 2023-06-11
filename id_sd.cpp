@@ -123,11 +123,18 @@ static  int                     sqHackLen;
 static  int                     sqHackSeqLen;
 static  longword                sqHackTime;
 
+
+
+inline void Delay(int wolfticks) NOEXCEPT
+{
+    if (wolfticks > 0) SDL_Delay(wolfticks * 100 / 7);
+}
+
 #ifdef USE_GPL
 
 DBOPL::Chip oplChip;
 
-static inline bool YM3812Init(int numChips, int clock, int rate)
+static inline boolean YM3812Init(int numChips, int clock, int rate)
 {
 	oplChip.Setup(rate);
 	return false;

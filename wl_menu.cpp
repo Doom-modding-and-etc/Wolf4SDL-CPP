@@ -483,7 +483,7 @@ US_ControlPanel (ScanCode scancode)
             StartCPMusic (XJAZNAZI_MUS);
             UnCacheLump (OPTIONS_LUMP_START, OPTIONS_LUMP_END);
             UnCacheLump (BACKDROP_LUMP_START, BACKDROP_LUMP_END);
-            ClearMemory ();
+            SD_StopDigitized ();
 
 
             CA_CacheGrChunk (IDGUYS1PIC);
@@ -3185,7 +3185,7 @@ void SetupSaveGames()
             else
                 strcpy(savepath, name);
 
-            const int handle = open(savepath, O_RDONLY | O_BINARY);
+            int handle = open(savepath, O_RDONLY | O_BINARY);
             if(handle >= 0)
             {
                 char temp[32];
@@ -3242,7 +3242,7 @@ HandleMenu (CP_iteminfo * item_i, CP_itemtype * items, void (*routine) (int w))
     y = basey + which * 13;
 
     VWB_DrawPic (x, y, C_CURSOR1PIC);
-    SetTextColor (items + which, 1);
+    SetTheTextColor (items + which, 1);
     if (redrawitem)
     {
         PrintX = item_i->x + item_i->indent;
@@ -3468,7 +3468,7 @@ void
 EraseGun (CP_iteminfo * item_i, CP_itemtype * items, int x, int y, int which)
 {
     VWB_Bar (x - 1, y, 25, 16, BKGDCOLOR);
-    SetTextColor (items + which, 0);
+    SetTheTextColor (items + which, 0);
 
     PrintX = item_i->x + item_i->indent;
     PrintY = item_i->y + which * 13;
@@ -3500,7 +3500,7 @@ DrawGun (CP_iteminfo * item_i, CP_itemtype * items, int x, int *y, int which, in
     VWB_Bar (x - 1, *y, 25, 16, BKGDCOLOR);
     *y = basey + which * 13;
     VWB_DrawPic (x, *y, C_CURSOR1PIC);
-    SetTextColor (items + which, 1);
+    SetTheTextColor (items + which, 1);
 
     PrintX = item_i->x + item_i->indent;
     PrintY = item_i->y + which * 13;
@@ -3553,7 +3553,7 @@ DrawMenu (CP_iteminfo * item_i, CP_itemtype * items)
 
     for (i = 0; i < item_i->amount; i++)
     {
-        SetTextColor (items + i, which == i);
+        SetTheTextColor (items + i, which == i);
 
         PrintY = item_i->y + i * 13;
         if ((items + i)->active)
@@ -3576,7 +3576,7 @@ DrawMenu (CP_iteminfo * item_i, CP_itemtype * items)
 //
 ////////////////////////////////////////////////////////////////////
 void
-SetTextColor (CP_itemtype * items, int hlight)
+SetTheTextColor (CP_itemtype * items, int hlight)
 {
     if (hlight)
     {

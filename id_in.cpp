@@ -60,8 +60,8 @@ static SDL_Joystick *Joystick;
 int JoyNumButtons;
 static int JoyNumHats;
 
-static bool GrabInput = false;
-static bool NeedRestore = false;
+static boolean GrabInput = false;
+static boolean NeedRestore = false;
 
 /*
 =============================================================================
@@ -672,7 +672,7 @@ int IN_MouseButtons (void)
 		return 0;
 }
 
-bool IN_IsInputGrabbed()
+boolean IN_IsInputGrabbed()
 {
     return GrabInput;
 }

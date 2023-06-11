@@ -22,14 +22,14 @@ void VWB_DrawPropString(const char* string)
 	byte *vbuf = VL_LockSurface(curSurface);
 	if(vbuf == NULL) return;
 
-	font = (fontstruct *) grsegs[STARTFONT+fontnumber];
+	font = wlreinterpret_cast_conversion(fontstruct *, grsegs[STARTFONT+fontnumber]);
 	height = font->height;
 	dest = vbuf + scaleFactor * (py * curPitch + px);
 
-	while ((ch = (byte)*string++)!=0)
+	while ((ch = wlstatic_cast_conversion(byte, *string++))!=0)
 	{
 		width = step = font->width[ch];
-		source = ((byte *)font)+font->location[ch];
+		source = (wlreinterpret_cast_conversion(byte *, font))+font->location[ch];
 		while (width--)
 		{
 			for(i=0; i<height; i++)
@@ -72,8 +72,7 @@ void VL_MungePic (byte *source, unsigned width, unsigned height)
 //
 // copy the pic to a temp buffer
 //
-	temp=(byte *) malloc(size);
-    CHECKMALLOCRESULT(temp);
+	temp=wlreinterpret_cast_conversion(byte *, SafeMalloc(size));
 	memcpy (temp,source,size);
 
 //
@@ -96,16 +95,16 @@ void VL_MungePic (byte *source, unsigned width, unsigned height)
 	free(temp);
 }
 
-void VWL_MeasureString (const char *string, word *width, word *height, fontstruct *font)
+void VWL_MeasureString (const char *string, word *width, word *height, fontstruct *font) NOEXCEPT
 {
 	*height = font->height;
 	for (*width = 0;*string;string++)
 		*width += font->width[*((byte *)string)];	// proportional width
 }
 
-void VW_MeasurePropString (const char *string, word *width, word *height)
+void VW_MeasurePropString (const char *string, word *width, word *height) NOEXCEPT
 {
-	VWL_MeasureString(string,width,height,(fontstruct *)grsegs[STARTFONT+fontnumber]);
+	VWL_MeasureString(string,width,height, wlreinterpret_cast_conversion(fontstruct *, grsegs[STARTFONT+fontnumber]));
 }
 
 /*
@@ -116,7 +115,7 @@ void VW_MeasurePropString (const char *string, word *width, word *height)
 =============================================================================
 */
 
-void VH_UpdateScreen()
+void VH_UpdateScreen() NOEXCEPT
 {
 	SDL_BlitSurface(screenBuffer, NULL, screen, NULL);
 	SDL_Flip(screen);
@@ -130,7 +129,7 @@ void VWB_DrawTile8 (int x, int y, int tile)
 
 void VWB_DrawTile8M (int x, int y, int tile)
 {
-	VL_MemToScreen (((byte *)grsegs[STARTTILE8M])+tile*64,8,8,x,y);
+	VL_MemToScreen ((wlreinterpret_cast_conversion(byte *, grsegs[STARTTILE8M]))+tile*64,8,8,x,y);
 }
 
 void VWB_DrawPic (int x, int y, int chunknum)
@@ -217,7 +216,7 @@ void LatchDrawPicScaledCoord (unsigned scx, unsigned scy, unsigned picnum)
 
 //==========================================================================
 
-void FreeLatchMem()
+void FreeLatchMem() NOEXCEPT
 {
     int i;
     for(i = 0; i < 2 + LATCHPICS_LUMP_END - LATCHPICS_LUMP_START; i++)
@@ -326,7 +325,7 @@ static unsigned int rndmask;
 extern SDL_Color curpal[256];
 
 // Returns the number of bits needed to represent the given value
-static int log2_ceil(uint32_t x)
+static int log2_ceil(uint32_t x) NOEXCEPT
 {
     int n = 0;
     uint32_t v = 1;
@@ -338,7 +337,7 @@ static int log2_ceil(uint32_t x)
     return n;
 }
 
-void VH_Startup()
+void VH_Startup() NOEXCEPT
 {
     int rndbits_x = log2_ceil(screenWidth);
     rndbits_y = log2_ceil(screenHeight);
@@ -356,7 +355,7 @@ boolean FizzleFade (SDL_Surface *source, int x1, int y1,
     unsigned width, unsigned height, unsigned frames, boolean abortable)
 {
     unsigned x, y, frame, pixperframe;
-    int32_t  rndval, lastrndval;
+    int32_t  rndval = 0, lastrndval;
     int      first = 1;
 
     lastrndval = 0;

@@ -8,7 +8,10 @@
 #ifndef __ID_SD__
 #define __ID_SD__
 
+extern "C"
+{
 #define alOut(n,b) YM3812Write(oplChip, n, b)
+}
 
 #define TickBase        70      // 70Hz per tick - used as a base for timer 0
 
@@ -121,10 +124,7 @@ extern  int             DigiChannel[];
 
 #define GetTimeCount()  ((SDL_GetTicks()*7)/100)
 
-inline void Delay(int wolfticks)
-{
-    if(wolfticks>0) SDL_Delay(wolfticks * 100 / 7);
-}
+extern inline void Delay(int wolfticks) NOEXCEPT;
 
 // Function prototypes
 extern  void    SD_Startup(void),

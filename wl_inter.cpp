@@ -1707,12 +1707,12 @@ CopyProtection (void)
             }
 
 /*                        for (i=0;i<NUMSOUNDS;i++,start++)
-                                MM_FreePtr ((memptr *)&audiosegs[start]); */
+                                MM_FreePtr ((void* *)&audiosegs[start]); */
             return;
         }
     }
 
-    ClearMemory ();
+    SD_StopDigitized ();
     ShutdownId ();
 
     printf ("%s\n", DosMessages[US_RndT () % 9]);

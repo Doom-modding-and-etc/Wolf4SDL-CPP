@@ -72,7 +72,7 @@ boolean buttonheld[NUMBUTTONS];
 
 boolean demorecord, demoplayback;
 int8_t *demoptr, *lastdemoptr;
-memptr demobuffer;
+void* demobuffer;
 
 //
 // current user input
@@ -605,7 +605,7 @@ void CheckKeys (void)
         DrawAmmo ();
         DrawScore ();
 
-        ClearMemory ();
+        SD_StopDigitized ();
         CA_CacheGrChunk (STARTFONT + 1);
         ClearSplitVWB ();
 
@@ -626,7 +626,7 @@ void CheckKeys (void)
 #ifdef DEBUGKEYS
     if (Keyboard[sc_BackSpace] && Keyboard[sc_LShift] && Keyboard[sc_Alt] && param_debugmode)
     {
-        ClearMemory ();
+        SD_StopDigitized ();
         CA_CacheGrChunk (STARTFONT + 1);
         ClearSplitVWB ();
 
@@ -645,7 +645,7 @@ void CheckKeys (void)
     //
     if (Keyboard[sc_B] && Keyboard[sc_A] && Keyboard[sc_T])
     {
-        ClearMemory ();
+        SD_StopDigitized ();
         CA_CacheGrChunk (STARTFONT + 1);
         ClearSplitVWB ();
 
@@ -690,7 +690,7 @@ void CheckKeys (void)
     {
         short oldmapon = gamestate.mapon;
         short oldepisode = gamestate.episode;
-        ClearMemory ();
+        SD_StopDigitized ();
         ClearSplitVWB ();
         US_ControlPanel (scan);
 
@@ -704,7 +704,7 @@ void CheckKeys (void)
     if ((scan >= sc_F1 && scan <= sc_F9) || scan == sc_Escape || buttonstate[bt_esc])
     {
         int lastoffs = StopMusic ();
-        ClearMemory ();
+        SD_StopDigitized ();
         VW_FadeOut ();
 
         US_ControlPanel (buttonstate[bt_esc] ? sc_Escape : scan);

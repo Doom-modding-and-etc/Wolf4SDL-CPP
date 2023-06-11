@@ -701,7 +701,7 @@ void ShutdownId (void)
 ==================
 */
 
-const float radtoint = (float)(FINEANGLES/2/PI);
+const float radtoint = (float)(FINEANGLES/2/M_PI);
 
 void BuildTables (void)
 {
@@ -723,7 +723,7 @@ void BuildTables (void)
     //
 
     float angle=0;
-    float anglestep=(float)(PI/2/ANGLEQUAD);
+    float anglestep=(float)(M_PI/2/ANGLEQUAD);
     for(i=0; i<ANGLEQUAD; i++)
     {
         fixed value=(int32_t)(GLOBAL1*sin(angle));
@@ -1678,8 +1678,8 @@ static void DemoLoop()
 
 void CheckParameters(int argc, char *argv[])
 {
-    bool hasError = false, showHelp = false;
-    bool sampleRateGiven = false, audioBufferGiven = false;
+    boolean hasError = false, showHelp = false;
+    boolean sampleRateGiven = false, audioBufferGiven = false;
     int defaultSampleRate = param_samplerate;
 
     for(int i = 1; i < argc; i++)

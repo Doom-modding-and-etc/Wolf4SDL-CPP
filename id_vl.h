@@ -15,7 +15,7 @@ extern SDL_Surface *screen, *screenBuffer, *curSurface;
 
 extern  boolean  fullscreen, usedoublebuffering;
 extern  unsigned screenWidth, screenHeight, screenBits, screenPitch, bufferPitch, curPitch;
-extern  int      scaleFactor;
+extern  unsigned      scaleFactor;
 
 extern	boolean  screenfaded;
 extern	unsigned bordercolor;
@@ -56,7 +56,7 @@ void inline VL_Bar      (int x, int y, int width, int height, int color)
     VL_BarScaledCoord(scaleFactor*x, scaleFactor*y,
         scaleFactor*width, scaleFactor*height, color);
 }
-void inline VL_ClearScreen(int color)
+void inline VL_ClearScreen(unsigned int color) NOEXCEPT
 {
     SDL_FillRect(curSurface, NULL, color);
 }

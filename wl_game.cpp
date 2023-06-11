@@ -1008,8 +1008,7 @@ char    demoname[13] = "DEMO?.";
 
 void StartDemoRecord (int levelnumber)
 {
-    demobuffer=malloc(MAXDEMOSIZE);
-    CHECKMALLOCRESULT(demobuffer);
+    demobuffer=SafeMalloc(MAXDEMOSIZE);
     demoptr = (int8_t *) demobuffer;
     lastdemoptr = demoptr+MAXDEMOSIZE;
 
@@ -1133,7 +1132,7 @@ void RecordDemo (void)
 
     StopMusic ();
     VW_FadeOut ();
-    ClearMemory ();
+    SD_StopDigitized ();
 
     FinishDemoRecord ();
 }
@@ -1206,7 +1205,7 @@ void PlayDemo (int demonumber)
     demoplayback = false;
 
     StopMusic ();
-    ClearMemory ();
+    SD_StopDigitized ();
 }
 
 //==========================================================================
@@ -1329,7 +1328,7 @@ void Died (void)
 
     IN_UserInput(100);
     SD_WaitSoundDone ();
-    ClearMemory();
+    SD_StopDigitized ();
 
     gamestate.lives--;
 
@@ -1374,7 +1373,7 @@ void GameLoop (void)
 #endif
 
 restartgame:
-    ClearMemory ();
+    SD_StopDigitized ();
     SETFONTCOLOR(0,15);
     VW_FadeOut();
     DrawPlayScreen ();
@@ -1434,7 +1433,7 @@ startplayloop:
             else
                 SD_WaitSoundDone();
 
-            ClearMemory ();
+            SD_StopDigitized ();
             gamestate.oldscore = gamestate.score;
             gamestate.mapon = 20;
             SetupGameLevel ();
@@ -1466,7 +1465,7 @@ startplayloop:
                 DrawKeys ();
                 VW_FadeOut ();
 
-                ClearMemory ();
+                SD_StopDigitized ();
 
                 LevelCompleted ();              // do the intermission
                 if(viewsize == 21) DrawPlayScreen();
@@ -1478,7 +1477,7 @@ startplayloop:
 
                     VW_FadeOut ();
 
-                    ClearMemory ();
+                    SD_StopDigitized ();
 
                     CheckHighScore (gamestate.score,gamestate.mapon+1);
 #ifndef JAPAN
@@ -1496,7 +1495,7 @@ startplayloop:
 
                     VW_FadeOut ();
 
-                    ClearMemory ();
+                    SD_StopDigitized ();
 
                     CheckHighScore (gamestate.score,gamestate.mapon+1);
 #ifndef JAPAN
@@ -1568,7 +1567,7 @@ startplayloop:
                 DC_StatusClearLCD();
 #endif
 
-                ClearMemory ();
+                SD_StopDigitized ();
 
                 CheckHighScore (gamestate.score,gamestate.mapon+1);
 #ifndef JAPAN
@@ -1584,11 +1583,11 @@ startplayloop:
 #else
                 VL_FadeOut (0,255,0,17,17,300);
 #endif
-                ClearMemory ();
+                SD_StopDigitized ();
 
                 Victory ();
 
-                ClearMemory ();
+                SD_StopDigitized ();
 
                 CheckHighScore (gamestate.score,gamestate.mapon+1);
 #ifndef JAPAN
@@ -1599,7 +1598,7 @@ startplayloop:
 
             default:
                 if(viewsize == 21) DrawPlayScreen();
-                ClearMemory ();
+                SD_StopDigitized ();
                 break;
         }
     } while (1);

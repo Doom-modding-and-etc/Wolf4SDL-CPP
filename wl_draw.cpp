@@ -1163,7 +1163,7 @@ void CalcTics (void)
 
 //==========================================================================
 
-bool RefreshCorner (bool flip)
+boolean RefreshCorner (int flip)
 {
     if (tilemap[xtile][ytile] && (xtile-xtilestep) == (xintercept>>TILESHIFT) && (ytile-ytilestep) == (yintercept>>TILESHIFT))
     {
