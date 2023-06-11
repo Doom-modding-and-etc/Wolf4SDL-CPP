@@ -89,5 +89,5 @@ OBJ/wl_state.o: wl_state.cpp
 OBJ/sdl_winmain.o: sdl_winmain.cpp
 	$(CPP) -c sdl_winmain.cpp -o OBJ/sdl_winmain.o $(CXXFLAGS)
 
-OBJ/fmopl.o: mame/fmopl.cpp
-	$(CPP) -c mame/fmopl.cpp -o OBJ/fmopl.o $(CXXFLAGS)
+OBJ/fmopl.o: mame/fmopl.c
+	$(CC) -c mame/fmopl.c -o OBJ/fmopl.o $(CXXFLAGS)

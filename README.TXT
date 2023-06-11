@@ -16,7 +16,8 @@ Main features:
  - Cross-platform:
       Supported operating systems are at least:
        - Windows 98, Windows ME, Windows 2000, Windows XP, Windows Vista
-         (32 and 64 bit), Windows 7 (32 and 64 bit)
+         (32 and 64 bit), Windows 7 (32 and 64 bit), Windows 8 (32 and 64 bit),
+		 Windows 10 (32 and 64 bit), Windows 11 (32 and 64 bit),
        - Linux
        - BSD variants
        - Mac OS X (x86)
@@ -157,8 +158,12 @@ The current version of the source code is available in the svn repository at:
 
 The following ways of compiling the source code are supported:
  - Makefile (for Linux, BSD variants and MinGW/MSYS)
+ - Visual C++ 2022 (Wolf4SDL.VC17.sln and Wolf4SDL.VC17.vcxproj) 
+ - Visual C++ 2019 (Wolf4SDL.VC16.sln and Wolf4SDL.VC16.vcxproj) 
+ - Visual C++ 2010 (Wolf4SDL.VC10.sln and Wolf4SDL.VC10.vcxproj) 
  - Visual C++ 2008 (Wolf4SDL.VC9.sln and Wolf4SDL.VC9.vcproj)
- - Visual C++ 2005 (Wolf4SDL.sln and Wolf4SDL.vcproj)
+ - Visual C++ 2005 (Wolf4SDL.VC8.sln and Wolf4SDL.VC8.vcproj)
+ - Visual C++ 2003 (Wolf4SDL.VC7_1.sln and Wolf4SDL.VC7_1.vcproj)
  - Visual C++ 6 (Wolf4SDL.dsw and Wolf4SDL.dsp)
  - Code::Blocks 8.02 (Wolf4SDL.cbp)
  - Dev-C++ 5.0 Beta 9.2 (4.9.9.2) (Wolf4SDL.dev) (see README-devcpp.txt)
