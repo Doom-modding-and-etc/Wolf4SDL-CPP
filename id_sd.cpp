@@ -30,12 +30,18 @@
 #include "wl_def.h"
 #include <SDL_mixer.h>
 #if defined(GP2X_940)
+extern "C"
+{ 
 #include "gp2x/fmopl.h"
+}
 #else
 #ifdef USE_GPL
 #include "dosbox/dbopl.h"
 #else
+extern "C" 
+{
 #include "mame/fmopl.h"
+}
 #endif
 #endif
 
